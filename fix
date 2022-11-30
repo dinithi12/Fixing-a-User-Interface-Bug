@@ -1,0 +1,87 @@
+public class CustomListViewAdapter extends ArrayAdapter<Client> {
+
+ViewHolder holder = null;
+private LayoutInflater inflator = null;
+private ArrayList<Client> orderList = null;
+ArrayList<View> allViews;
+
+public CustomListViewAdapter(Context context, int resource,
+        List<Client> objects) {
+    super(context, resource, objects);
+
+    orderList = (ArrayList<Client>) objects;
+    inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    allViews = new ArrayList<View>();
+}
+
+@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+    if(convertView == null) {
+        convertView = inflator.inflate(R.layout.listview_add_order, null);
+        holder = new ViewHolder();
+        convertView.setTag(holder);
+        holder.txtViewName = (TextView) convertView.findViewById(R.id.txtViewAddOrder);
+        holder.spinnerAddorder = (Spinner) convertView.findViewById(R.id.spinnerAddOrder);
+        holder.checkAddorder = (CheckBox) convertView.findViewById(R.id.checkAddOrder);
+        holder.checkAddorder.setTag(holder);
+    } else {
+        holder = (ViewHolder) convertView.getTag();
+
+
+        holder.checkAddorder.setTag(holder);
+    }
+
+    allViews.add(position, holder.spinnerAddorder);
+
+    holder.checkAddorder.setOnClickListener(new OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            CheckBox cchk = (CheckBox)view;
+            ViewHolder checkPosition = (ViewHolder) view.getTag();
+
+
+            if(cchk.isChecked()) {
+
+                checkPosition.spinnerAddorder.setVisibility(View.VISIBLE);
+
+            } else {
+                checkPosition.spinnerAddorder.setVisibility(View.INVISIBLE);
+            }
+        }
+    });
+
+    List<String> list = new ArrayList<String>();
+    list.add("Select Quantity");
+    list.add("1");
+    list.add("2");
+    list.add("3");
+    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this.getContext(),R.layout.spinner_add_order_style, list);
+    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+    holder.spinnerAddorder.setAdapter(dataAdapter);
+
+    if(holder.checkAddorder.isChecked()) {
+
+
+        ViewHolder checkPosition = (ViewHolder) holder.checkAddorder.getTag();
+        checkPosition.spinnerAddorder.setVisibility(View.VISIBLE);
+    } else {
+
+        ViewHolder checkPosition = (ViewHolder) holder.checkAddorder.getTag();
+        checkPosition.spinnerAddorder.setVisibility(View.INVISIBLE);
+    }
+
+
+    Client order = orderList.get(position);
+
+    holder.txtViewName.setText(order.getFirstName());
+    return  convertView;
+}
+
+private static class ViewHolder {
+    public TextView txtViewName = null;
+    public Spinner spinnerAddorder = null;
+    public CheckBox checkAddorder = null;
+}
+
+     }
